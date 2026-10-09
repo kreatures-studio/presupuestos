@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Presupuestos · KREA.TURES</title>
+    <meta name="description" content="Herramienta para crear presupuestos de KREA.TURES: editor, previsualización A4 y exportación a PDF." />
+    <meta name="theme-color" content="#e62434" />
+    <link id="themeColor" rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles/app.css" />
+    <link rel="stylesheet" href="styles/doc.css" />
+  </head>
+
+  <body>
+    <!-- ------------------------------------------------------------ barra -->
+    <header class="topbar">
+      <div class="topbar__brand">
+        <img src="assets/img/mark.svg" alt="KREA.TURES" width="40" height="40" />
+        <div class="topbar__title">
+          Presupuestos
+          <small><span id="today">—</span> · Krea.tures</small>
+        </div>
+      </div>
+
+      <div class="topbar__actions">
+        <button class="btn" type="button" id="loadKoniec" title="Cargar el presupuesto de ejemplo (Koniec)">Ejemplo Koniec</button>
+        <button class="btn" type="button" id="newDoc">Nuevo</button>
+        <button class="btn" type="button" id="openJson" title="Ver o pegar el JSON del presupuesto">JSON</button>
+        <button class="btn" type="button" id="import">Importar</button>
+        <button class="btn" type="button" id="export">Exportar</button>
+        <button class="btn btn--primary" type="button" id="print">Imprimir / PDF</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden />
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- --------------------------------------------------------- editor -->
+      <div class="panel editor" id="editor">
+        <!-- Documento -->
+        <details class="card" open>
+          <summary class="card__title">Documento</summary>
+          <p class="card__hint">Título, número y fecha que aparecen en la cabecera del presupuesto.</p>
+
+          <div class="grid grid--2">
+            <label class="field field--full">
+              <span class="label">Título</span>
+              <input type="text" data-quote-field="title" id="qTitle" value="" />
+            </label>
+            <label class="field field--full">
+              <span class="label">Subtítulo / proyecto</span>
+              <input type="text" data-quote-field="subtitle" value="" placeholder="Escape Room · PrintMyEscape (primera entrega, 9 puzzles)" />
+            </label>
+            <label class="field">
+              <span class="label">Nº presupuesto</span>
+              <input type="text" data-quote-field="number" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Fecha</span>
+              <input type="date" data-quote-field="date" value="" />
+            </label>
+            <label class="field field--full">
+              <span class="label">Alcance (texto destacado)</span>
+              <textarea data-quote-field="scope" rows="3" placeholder="Programación del asistente y motor de PDF…"></textarea>
+            </label>
+          </div>
+
+          <div class="grid grid--2" style="margin-top: 12px">
+            <label class="field">
+              <span class="label">Plantilla</span>
+              <span class="actions">
+                <button class="btn btn--tiny" type="button" data-template="modern">Moderna</button>
+                <button class="btn btn--tiny" type="button" data-template="classic">Clásica</button>
+              </span>
+            </label>
+            <label class="field">
+              <span class="label">IVA %</span>
+              <input type="number" step="0.5" inputmode="decimal" data-quote-field="vatRate" value="21" />
+            </label>
+            <div class="field">
+              <span class="label">Opciones de tabla</span>
+              <span class="check-grid">
+                <label class="inline-check">
+                  <input type="checkbox" data-flag="showDiscount" />
+                  <span>Mostrar descuento por partida</span>
+                </label>
+                <label class="inline-check">
+                  <input type="checkbox" data-flag="showUnitPrice" />
+                  <span>Mostrar importe por unidad</span>
+                </label>
+              </span>
+            </div>
+            <label class="field">
+              <span class="label">Texto «por unidad» (opcional)</span>
+              <input type="text" data-quote-field="perUnitLabel" value="" placeholder="70 horas a 40,00 €/h" />
+            </label>
+            <label class="field">
+              <span class="label">Nº de unidades para el cálculo</span>
+              <input type="number" step="1" min="0" data-quote-field="perUnitQty" value="0" />
+            </label>
+          </div>
+        </details>
+
+        <!-- Cliente -->
+        <details class="card">
+          <summary class="card__title">Cliente</summary>
+          <p class="card__hint">Datos que se imprimen en el bloque de destinatario.</p>
+          <div class="grid grid--2">
+            <label class="field field--full">
+              <span class="label">Nombre</span>
+              <input type="text" data-quote-field="client.name" value="" />
+            </label>
+            <label class="field field--full">
+              <span class="label">Dirección</span>
+              <input type="text" data-quote-field="client.address" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Ciudad</span>
+              <input type="text" data-quote-field="client.city" value="" />
+            </label>
+            <label class="field">
+              <span class="label">C.I.F. / N.I.F.</span>
+              <input type="text" data-quote-field="client.taxId" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Teléfono</span>
+              <input type="text" data-quote-field="client.phone" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Email</span>
+              <input type="text" data-quote-field="client.email" value="" />
+            </label>
+          </div>
+        </details>
+
+        <!-- Partidas -->
+        <details class="card" open>
+          <summary class="card__title">Partidas</summary>
+          <p class="card__hint">
+            Arrastra una partida para reordenarla. La «cantidad detallada» imprime varias líneas dentro de su celda.
+          </p>
+          <div class="lines" id="lines"></div>
+          <button class="btn btn--dark" type="button" id="addLine">+ Añadir partida</button>
+          <p class="card__hint" id="summary" style="margin: 12px 0 0"></p>
+        </details>
+
+        <!-- Observaciones -->
+        <details class="card">
+          <summary class="card__title">Observaciones</summary>
+          <p class="card__hint">Una observación por línea. Se imprimen bajo la tabla.</p>
+          <label class="field field--full">
+            <span class="label">Texto</span>
+            <textarea data-quote-field="notes" rows="4"></textarea>
+          </label>
+        </details>
+
+        <!-- Emisor y estilo -->
+        <details class="card">
+          <summary class="card__title">Emisor y estilo</summary>
+          <p class="card__hint">Datos del estudio y aspecto del documento.</p>
+          <div class="grid grid--2">
+            <label class="field">
+              <span class="label">Estudio</span>
+              <input type="text" data-quote-field="settings.company" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Lema</span>
+              <input type="text" data-quote-field="settings.tagline" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Email</span>
+              <input type="text" data-quote-field="settings.email" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Web</span>
+              <input type="text" data-quote-field="settings.website" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Ubicación</span>
+              <input type="text" data-quote-field="settings.location" value="" />
+            </label>
+            <label class="field">
+              <span class="label">Color de acento</span>
+              <span class="actions">
+                <input type="color" data-quote-field="settings.accent" value="#e62434" />
+                <button class="btn btn--tiny" type="button" id="logoReset">Logotipo original</button>
+              </span>
+            </label>
+            <label class="field">
+              <span class="label">Idioma de formato</span>
+              <select data-quote-field="settings.locale">
+                <option value="es-ES">Español (1.234,56 €)</option>
+                <option value="en-US">English (€1,234.56)</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="label">Moneda</span>
+              <select data-quote-field="settings.currency">
+                <option value="EUR">Euro (€)</option>
+                <option value="USD">Dólar ($)</option>
+                <option value="GBP">Libra (£)</option>
+              </select>
+            </label>
+            <label class="field field--full">
+              <span class="label">Logotipo propio (PNG/SVG, máx. 400 KB)</span>
+              <input type="file" id="logoFile" accept="image/png,image/svg+xml,image/jpeg" />
+            </label>
+          </div>
+        </details>
+      </div>
+
+      <!-- ---------------------------------------------------- documento A4 -->
+      <section class="panel preview" aria-label="Previsualización del presupuesto">
+        <div class="preview__bar">
+          <strong id="docTitlePreview">Presupuesto</strong>
+          <span id="pageCount">1 página</span>
+          <span style="margin-left: auto">Vista A4 · se imprime sin barras ni formularios</span>
+        </div>
+        <div class="pages" id="pages"></div>
+      </section>
+    </main>
+
+    <!-- ------------------------------------------------------------ modal -->
+    <div class="modal" id="jsonModal" hidden>
+      <div class="modal__box">
+        <h2>JSON del presupuesto</h2>
+        <p class="card__hint">
+          Copia este contenido para guardarlo o compártelo. Pégalo y pulsa «Aplicar» para cargarlo.
+        </p>
+        <label class="field field--full">
+          <textarea id="jsonText" spellcheck="false"></textarea>
+        </label>
+        <div class="modal__actions">
+          <button class="btn" type="button" id="closeJson">Cerrar</button>
+          <button class="btn btn--primary" type="button" id="applyJson">Aplicar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

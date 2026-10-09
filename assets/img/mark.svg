@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Mascota KREA.TURES">
+  <rect width="96" height="96" rx="20" fill="#111111"/>
+  <g transform="translate(48 50) scale(1.42)">
+    <ellipse cx="0" cy="-8.5" rx="12" ry="11.4" fill="#f5f2ee"/>
+    <circle cx="-8.6" cy="-19" r="4.4" fill="#f5f2ee"/>
+    <circle cx="6.3" cy="-20.5" r="5.4" fill="#f5f2ee"/>
+    <ellipse cx="-3.1" cy="-10.2" rx="1.6" ry="1.9" fill="#111111"/>
+    <circle cx="-9.4" cy="-3.9" r="3.5" fill="#111111"/>
+    <path d="M-1.6 1.4h5.6c2.7 0 4.6 1.7 4.4 3.4-.25 1.8-2.3 2.9-4.8 2.5-2-.35-3.5-1.6-5.2-2.4z" fill="#f5f2ee"/>
+    <ellipse cx="-4.6" cy="-7.4" rx="1.3" ry="1.5" fill="#111111"/>
+    <ellipse cx="-2.2" cy="-6.9" rx="1.1" ry="1.3" fill="#111111"/>
+  </g>
+</svg>
